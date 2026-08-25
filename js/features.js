@@ -194,7 +194,7 @@
 
     function _createAudio() {
         if (_audio) return _audio;
-        _audio = new Audio(SRC);
+        _audio = new Audio('https://music.163.com/song/media/outer/url?id=41500654.mp3');
         _audio.loop   = true;
         _audio.volume = 0.01;
         _audio.preload = 'auto';
