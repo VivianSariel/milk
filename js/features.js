@@ -186,7 +186,7 @@
 
 (function() {
     var KEY = 'keepaliveAudioEnabled';
-    var SRC = 'https://files.catbox.moe/0tbopr.mp3';
+    var SRC = 'https://music.163.com/song/media/outer/url?id=41500654.mp3';
     var _audio = null;
     var _unlockBound = false;
 
