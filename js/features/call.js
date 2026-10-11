@@ -41,7 +41,7 @@
     }
 
     const SVG_HU = `<svg viewBox="0 0 24 24" fill="none" style="display:block;width:100%;height:100%;">
-  <path d="M6.6 10.8c1.4 2.8 3.7 5.1 6.5 6.5l2.2-2.2c.28-.27.68-.36 1.03-.24 1.1.37 2.3.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.56 21 3 13.44 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.28.2 2.5.57 3.57.11.35.03.74-.24 1.02L6.6 10.8z" fill="white"/>
+  <path d="M6.6 10.8c1.4 2.8 3.7 5.1 6.5 6.5l2.2-2.2c.28-.27.68-.36 1.03-.24 1.1.37 2.3.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.56 21 3 13.44 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.28.[...]
   <line x1="21" y1="3" x2="3" y2="21" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
 </svg>`;
 
@@ -393,7 +393,7 @@ html:not([data-theme="dark"])[data-color-theme="black-white"] .message-sent{
       <button class="call-inc-btn call-inc-accept" id="call-inc-accept">
         <div class="call-inc-circle">
           <svg viewBox="0 0 24 24" fill="none" style="display:block;width:100%;height:100%;">
-            <path d="M6.6 10.8c1.4 2.8 3.7 5.1 6.5 6.5l2.2-2.2c.28-.27.68-.36 1.03-.24 1.1.37 2.3.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.56 21 3 13.44 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.28.2 2.5.57 3.57.11.35.03.74-.24 1.02L6.6 10.8z" fill="white"/>
+            <path d="M6.6 10.8c1.4 2.8 3.7 5.1 6.5 6.5l2.2-2.2c.28-.27.68-.36 1.03-.24 1.1.37 2.3.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.56 21 3 13.44 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.28.[...]"/>
           </svg>
         </div>
         <span class="call-inc-lbl">接听</span>
@@ -653,6 +653,9 @@ html:not([data-theme="dark"])[data-color-theme="black-white"] .message-sent{
         localStorage.setItem(KEY_POS,  JSON.stringify(S.pos));
         localStorage.setItem(KEY_SIZE, JSON.stringify(S.size));
         sendCallMsg(dur);
+        if (window.callSystemNotification && typeof window.callSystemNotification.sendCallEndNotification === 'function') {
+            window.callSystemNotification.sendCallEndNotification(dur);
+        }
         if (typeof showNotification === 'function' && dur > 1500)
             showNotification(`通话结束 · ${fmt(dur)}`, 'info', 3000);
         else if (typeof showNotification === 'function' && dur <= 1500 && dur > 0)
@@ -666,6 +669,14 @@ html:not([data-theme="dark"])[data-color-theme="black-white"] .message-sent{
         fillAv('call-inc-avatar'); fillNm('call-inc-name');
         ov.classList.add('visible');
         clearTimeout(S.incomingTimer);
+
+        if (window.callSystemNotification && typeof window.callSystemNotification.sendCallNotification === 'function') {
+            const partnerName = getName();
+            const partnerAvatar = getAvSrc();
+            if (document.hidden || !document.hasFocus()) {
+                window.callSystemNotification.sendCallNotification(partnerName, partnerAvatar);
+            }
+        }
 
         const autoRejectChance = 0.30;
         if (Math.random() < autoRejectChance) {
